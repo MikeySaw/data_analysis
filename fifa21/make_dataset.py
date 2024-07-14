@@ -3,7 +3,7 @@ import pandas as pd
 import re
 
 
-def parse_height_to_metric(height: str):
+def parse_height_to_metric(height: str) -> int:
     match = re.match(r"(\d+)'(\d+)\"", height)
     if match:
         feet = int(match.group(1))
@@ -14,7 +14,7 @@ def parse_height_to_metric(height: str):
         return int(height)
     
     
-def parse_weight_to_metric(weight: str):
+def parse_weight_to_metric(weight: str) -> int:
     match = re.match(r"(\d+)lbs", weight)
     if match:
         pounds = int(match.group(1))
@@ -23,14 +23,14 @@ def parse_weight_to_metric(weight: str):
         return int(weight)
     
     
-def remove_newlines(text):
+def remove_newlines(text) -> str:
     if isinstance(text, str):
         return text.strip()
     else:
         return text
     
 
-def convert_money_to_int(value: str):
+def convert_money_to_int(value: str) -> int:
     match_M = re.match(r'€\d+(\.\d+)?M', value)
     if match_M:
         value = value.replace('M', '')
@@ -44,7 +44,20 @@ def convert_money_to_int(value: str):
     return int(value)
 
 
-def main(data: pd.DataFrame):
+def remove_stars(data: pd.DataFrame) -> pd.DataFrame:    
+    star_columns = []
+    for column in data.columns:
+        match = re.findall(r'★', str(data[column][0]))
+        if match:
+            star_columns.append(column)
+
+    for column in star_columns:
+        data[column] = data[column].str.replace("★", "").str.strip().apply(int)
+
+    return data
+
+
+def main(data: pd.DataFrame) -> pd.DataFrame:
     data['Height'] = data['Height'].str.replace('cm','').apply(parse_height_to_metric)
     data['Weight'] = data['Weight'].str.replace('kg', '').apply(parse_weight_to_metric)
 
@@ -53,6 +66,7 @@ def main(data: pd.DataFrame):
     data['Value'] = data['Value'].apply(convert_money_to_int)
     data['Wage'] = data['Wage'].apply(convert_money_to_int)
     data['Release Clause'] = data['Release Clause'].apply(convert_money_to_int)
+    data = remove_stars(data)
 
     return data
 
