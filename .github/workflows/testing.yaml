@@ -19,6 +19,11 @@ jobs:
           key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
           restore-keys: |
             ${{ runner.os }}-pip-
+      - name: Get data
+        run: |
+          pip install dvc
+          pip install dvc-gs
+          dvc pull 
       - name: Install dependencies
         run: |
           pip install pytest
