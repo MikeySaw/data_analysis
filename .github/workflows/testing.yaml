@@ -28,7 +28,7 @@ jobs:
         run: |
           echo "${{ secrets.GCLOUD_JSON }}" > gcloud.json
           echo "GOOGLE_APPLICATION_CREDENTIALS=${PWD}/gcloud.json" >> $GITHUB_ENV
-          gcloud auth activate-service-account --key-file=gcloud.json
+          gcloud auth activate-service-account --key-file=${{ secrets.GCLOUD_JSON }}
       - name: Get data
         run: |
           pip install dvc
