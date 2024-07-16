@@ -19,16 +19,6 @@ jobs:
           key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
           restore-keys: |
             ${{ runner.os }}-pip-
-      - name: Set up Cloud SDK
-        uses: google-github-actions/setup-gcloud@v0.2.0
-        with:
-          service_account_key: ${{ secrets.GCLOUD_JSON }}
-          project_id: lmumlops-427510
-      - name: Authenticate with GCP
-        run: |
-          echo "${{ secrets.GCLOUD_JSON }}" > gcloud.json
-          echo "GOOGLE_APPLICATION_CREDENTIALS=${PWD}/gcloud.json" >> $GITHUB_ENV
-          gcloud auth activate-service-account --key-file=${{ secrets.GCLOUD_JSON }}
       - name: Get data
         run: |
           pip install dvc
